@@ -163,7 +163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 73718672}
   m_Layer: 0
-  m_Name: === Player ===
+  m_Name: === Player =================
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: e45f8f823c093d941855bb23b53b9414, type: 3}
   m_NavMeshLayer: 0
@@ -315,7 +315,7 @@ GameObject:
   - component: {fileID: 106126629}
   - component: {fileID: 106126628}
   m_Layer: 0
-  m_Name: Cube (2)
+  m_Name: Cube (replace it)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -611,7 +611,7 @@ GameObject:
   m_Component:
   - component: {fileID: 143344685}
   m_Layer: 0
-  m_Name: === Interactable Objects ===
+  m_Name: === Interactable Objects =========================
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: e45f8f823c093d941855bb23b53b9414, type: 3}
   m_NavMeshLayer: 0
@@ -757,7 +757,7 @@ GameObject:
   m_Component:
   - component: {fileID: 198239213}
   m_Layer: 0
-  m_Name: === Grabbable Objects ===
+  m_Name: === Grabbable Objects ==============
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: e45f8f823c093d941855bb23b53b9414, type: 3}
   m_NavMeshLayer: 0
@@ -1671,7 +1671,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1004492629}
   m_Layer: 0
-  m_Name: '=== Environment === '
+  m_Name: === Environment ==============
   m_TagString: Untagged
   m_Icon: {fileID: 2800000, guid: e45f8f823c093d941855bb23b53b9414, type: 3}
   m_NavMeshLayer: 0
@@ -1708,7 +1708,7 @@ GameObject:
   - component: {fileID: 1014096007}
   - component: {fileID: 1014096006}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Cube(replace it)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2240,7 +2240,7 @@ GameObject:
   - component: {fileID: 1294051189}
   - component: {fileID: 1294051188}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Cube (replace it)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2578,7 +2578,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 555133621666883522, guid: a40d7854b2bdd6047966a327dc7d335f, type: 3}
       propertyPath: m_Name
-      value: Old Chest
+      value: Chest[Inventory]
+      objectReference: {fileID: 0}
+    - target: {fileID: 555133621666883522, guid: a40d7854b2bdd6047966a327dc7d335f, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 936726435520118136, guid: a40d7854b2bdd6047966a327dc7d335f, type: 3}
       propertyPath: m_LocalPosition.x
