@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LayerNames:
   - Default
-  - 
-  - 
-  - 
+  - puzzle1
+  - puzzle2
+  - puzzle3
   - 
   - 
   - 
