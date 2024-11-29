@@ -12,7 +12,8 @@ public class BonePuzzleManager : MonoBehaviour
     }
 
     public Bone[] bones;
-    private bool allBonesCorrect = false;
+    private bool allBonesCorrect = false; // 모든 뼈가 맞춰졌는지 확인
+    private bool messageDisplayed = false; // 메세지 출력 여부 관리
 
     private void Update()
     {
@@ -22,6 +23,8 @@ public class BonePuzzleManager : MonoBehaviour
 
     private void CheckBonePosition()
     {
+        if (messageDisplayed) return;
+
         allBonesCorrect = true;
         
         foreach (var bone in bones)
@@ -35,9 +38,10 @@ public class BonePuzzleManager : MonoBehaviour
         }
 
         // 모든 뼈가 올바른 위치에 있는 경우
-        if (allBonesCorrect)
+        if (allBonesCorrect && !messageDisplayed)
         {
             Debug.Log("All Bones Correct");
+            messageDisplayed = true; // 메시지 출력 후 상태를 업데이트
         }
 
     }
