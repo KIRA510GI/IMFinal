@@ -10,38 +10,38 @@ public class TMController : MonoBehaviour
 
     public InputActionProperty toggleAction; // Input Action (Button Press)
 
-    public float followSpeed; // À§Ä¡ º¯È­ ¼Óµµ (Áï°¢ÀûÀ¸·Î µû¶ó¿Àµµ·Ï Áõ°¡)
-    public float rotationSpeed; // È¸Àü º¯È­ ¼Óµµ
-    public float maxDistance; // ÃÖ´ë °Å¸® Á¦ÇÑ (¸Å¿ì °¡±õ°Ô)
+    public float followSpeed; // ìœ„ì¹˜ ë³€í™” ì†ë„ (ì¦‰ê°ì ìœ¼ë¡œ ë”°ë¼ì˜¤ë„ë¡ ì¦ê°€)
+    public float rotationSpeed; // íšŒì „ ë³€í™” ì†ë„
+    public float maxDistance; // ìµœëŒ€ ê±°ë¦¬ ì œí•œ (ë§¤ìš° ê°€ê¹ê²Œ)
 
-    public Vector3 positionOffset = new Vector3(); // ÄÁÆ®·Ñ·¯¿Í ´õ °¡±î¿î ¿ÀÇÁ¼Â
+    public Vector3 positionOffset = new Vector3(); // ì»¨íŠ¸ë¡¤ëŸ¬ì™€ ë” ê°€ê¹Œìš´ ì˜¤í”„ì…‹
 
     private bool isMenuVisible = false;
 
     private void OnEnable()
     {
-        // Input Action È°¼ºÈ­
+        // Input Action í™œì„±í™”
         toggleAction.action.Enable();
         toggleAction.action.performed += ToggleMenu;
     }
 
     private void OnDisable()
     {
-        // Input Action ºñÈ°¼ºÈ­
+        // Input Action ë¹„í™œì„±í™”
         toggleAction.action.performed -= ToggleMenu;
         toggleAction.action.Disable();
     }
 
     private void ToggleMenu(InputAction.CallbackContext context)
     {
-        // ¸Ş´º È°¼ºÈ­/ºñÈ°¼ºÈ­ ÀüÈ¯
+        // ë©”ë‰´ í™œì„±í™”/ë¹„í™œì„±í™” ì „í™˜
         isMenuVisible = !isMenuVisible;
         menuCanvas.SetActive(isMenuVisible);
 
-        // ÃÊ±â À§Ä¡¿Í È¸Àü ¼³Á¤
+        // ì´ˆê¸° ìœ„ì¹˜ì™€ íšŒì „ ì„¤ì •
         if (isMenuVisible)
         {
-            UpdateMenuPositionAndRotation(true); // Áï½Ã À§Ä¡ ¹× È¸Àü ¼³Á¤
+            UpdateMenuPositionAndRotation(true); // ì¦‰ì‹œ ìœ„ì¹˜ ë° íšŒì „ ì„¤ì •
         }
     }
 
@@ -49,26 +49,26 @@ public class TMController : MonoBehaviour
     {
         if (isMenuVisible)
         {
-            UpdateMenuPositionAndRotation(false); // ºÎµå·´°Ô À§Ä¡ ¹× È¸Àü ÀÌµ¿
+            UpdateMenuPositionAndRotation(false); // ë¶€ë“œëŸ½ê²Œ ìœ„ì¹˜ ë° íšŒì „ ì´ë™
         }
     }
 
     private void UpdateMenuPositionAndRotation(bool instant)
     {
-        // AnchorÀÇ À§Ä¡¿Í È¸ÀüÀ» ±â¹İÀ¸·Î ¸Ş´ºÀÇ À§Ä¡ ¼³Á¤
+        // Anchorì˜ ìœ„ì¹˜ì™€ íšŒì „ì„ ê¸°ë°˜ìœ¼ë¡œ ë©”ë‰´ì˜ ìœ„ì¹˜ ì„¤ì •
         Vector3 targetPosition = Anchor.transform.position
                                 + Anchor.transform.forward * positionOffset.z
                                 + Anchor.transform.right * positionOffset.x
                                 + Anchor.transform.up * positionOffset.y;
 
-        // °Å¸® Á¦ÇÑ: ÄÁÆ®·Ñ·¯¿¡ ¸Å¿ì °¡±õ°Ô À¯Áö
+        // ê±°ë¦¬ ì œí•œ: ì»¨íŠ¸ë¡¤ëŸ¬ì— ë§¤ìš° ê°€ê¹ê²Œ ìœ ì§€
         if (Vector3.Distance(menuCanvas.transform.position, targetPosition) > maxDistance)
         {
             targetPosition = Anchor.transform.position +
                              (targetPosition - Anchor.transform.position).normalized * maxDistance;
         }
 
-        // À§Ä¡¿Í È¸Àü ¾÷µ¥ÀÌÆ® (Áï½Ã ÀÌµ¿ ¶Ç´Â ºÎµå·´°Ô ÀÌµ¿)
+        // ìœ„ì¹˜ì™€ íšŒì „ ì—…ë°ì´íŠ¸ (ì¦‰ì‹œ ì´ë™ ë˜ëŠ” ë¶€ë“œëŸ½ê²Œ ì´ë™)
         if (instant)
         {
             menuCanvas.transform.position = targetPosition;

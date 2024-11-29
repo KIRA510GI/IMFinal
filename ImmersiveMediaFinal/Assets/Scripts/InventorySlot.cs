@@ -4,11 +4,11 @@ using UnityEngine.InputSystem;
 
 public class InventorySlot : MonoBehaviour
 {
-    public GameObject ItemInSlot; // ½½·Ô¿¡ ÀúÀåµÈ ¾ÆÀÌÅÛ
-    public Image slotImage; // ½½·Ô ÀÌ¹ÌÁö UI
-    private Color originalColor; // ¿ø·¡ÀÇ »ö»ó ÀúÀå
+    public GameObject ItemInSlot; // ìŠ¬ë¡¯ì— ì €ì¥ëœ ì•„ì´í…œ
+    public Image slotImage; // ìŠ¬ë¡¯ ì´ë¯¸ì§€ UI
+    private Color originalColor; // ì›ë˜ì˜ ìƒ‰ìƒ ì €ì¥
 
-    public InputActionProperty grabAction; // Àâ±â ¾×¼ÇÀ» À§ÇÑ InputActionProperty
+    public InputActionProperty grabAction; // ì¡ê¸° ì•¡ì…˜ì„ ìœ„í•œ InputActionProperty
 
     void Start()
     {
@@ -20,10 +20,10 @@ public class InventorySlot : MonoBehaviour
     {
         GameObject obj = other.gameObject;
 
-        // ½½·Ô¿¡ ÀÌ¹Ì ¾ÆÀÌÅÛÀÌ ÀÖ´Â °æ¿ì
+        // ìŠ¬ë¡¯ì— ì´ë¯¸ ì•„ì´í…œì´ ìˆëŠ” ê²½ìš°
         if (ItemInSlot != null)
         {
-            // »ç¿ëÀÚ°¡ Àâ±â µ¿ÀÛÀ» ÇÏ¸é ½½·Ô¿¡¼­ ¾ÆÀÌÅÛÀ» Á¦°Å
+            // ì‚¬ìš©ìê°€ ì¡ê¸° ë™ì‘ì„ í•˜ë©´ ìŠ¬ë¡¯ì—ì„œ ì•„ì´í…œì„ ì œê±°
             if (grabAction.action.ReadValue<float>() > 0.1f)
             {
                 RemoveItem(ItemInSlot);
@@ -31,10 +31,10 @@ public class InventorySlot : MonoBehaviour
             return;
         }
 
-        // »õ·Î¿î ¾ÆÀÌÅÛÀ» Ãß°¡ÇÏ·Á¸é ¾ÆÀÌÅÛÀÎÁö È®ÀÎ
+        // ìƒˆë¡œìš´ ì•„ì´í…œì„ ì¶”ê°€í•˜ë ¤ë©´ ì•„ì´í…œì¸ì§€ í™•ì¸
         if (!IsItem(obj)) return;
 
-        // »ç¿ëÀÚ°¡ Àâ±â¸¦ ¸ØÃèÀ» ¶§ ¾ÆÀÌÅÛÀ» ½½·Ô¿¡ »ğÀÔ
+        // ì‚¬ìš©ìê°€ ì¡ê¸°ë¥¼ ë©ˆì·„ì„ ë•Œ ì•„ì´í…œì„ ìŠ¬ë¡¯ì— ì‚½ì…
         if (grabAction.action.ReadValue<float>() < 0.1f)
         {
             InsertItem(obj);
@@ -45,67 +45,67 @@ public class InventorySlot : MonoBehaviour
         }
     }
 
-    // ¾ÆÀÌÅÛÀÎÁö È®ÀÎ
+    // ì•„ì´í…œì¸ì§€ í™•ì¸
     bool IsItem(GameObject obj)
     {
         return obj.GetComponent<Item>() != null;
     }
 
-    // ½½·Ô¿¡ ¾ÆÀÌÅÛ Ãß°¡
+    // ìŠ¬ë¡¯ì— ì•„ì´í…œ ì¶”ê°€
     void InsertItem(GameObject obj)
     {
         Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
         if (objRigidbody != null)
         {
-            objRigidbody.isKinematic = true; // ¹°¸® ¿£Áø ºñÈ°¼ºÈ­
+            objRigidbody.isKinematic = true; // ë¬¼ë¦¬ ì—”ì§„ ë¹„í™œì„±í™”
         }
 
-        // ½½·ÔÀÇ ÀÚ½ÄÀ¸·Î ¼³Á¤
+        // ìŠ¬ë¡¯ì˜ ìì‹ìœ¼ë¡œ ì„¤ì •
         obj.transform.SetParent(transform, true);
 
-        // ¾ÆÀÌÅÛ À§Ä¡ ¹× È¸Àü ¼³Á¤
+        // ì•„ì´í…œ ìœ„ì¹˜ ë° íšŒì „ ì„¤ì •
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localEulerAngles = obj.GetComponent<Item>().slotRotation;
 
-        // ¾ÆÀÌÅÛ »óÅÂ ¾÷µ¥ÀÌÆ®
+        // ì•„ì´í…œ ìƒíƒœ ì—…ë°ì´íŠ¸
         Item itemScript = obj.GetComponent<Item>();
         itemScript.inSlot = true;
         itemScript.CurrentSlot = this;
 
-        // ½½·Ô Á¤º¸ ¾÷µ¥ÀÌÆ®
+        // ìŠ¬ë¡¯ ì •ë³´ ì—…ë°ì´íŠ¸
         ItemInSlot = obj;
-        slotImage.color = Color.blue; // ½½·Ô »ö»ó º¯°æ
+        slotImage.color = Color.blue; // ìŠ¬ë¡¯ ìƒ‰ìƒ ë³€ê²½
     }
 
-    // ½½·Ô¿¡¼­ ¾ÆÀÌÅÛ Á¦°Å
+    // ìŠ¬ë¡¯ì—ì„œ ì•„ì´í…œ ì œê±°
     public void RemoveItem(GameObject obj)
     {
-        // ¾ÆÀÌÅÛ »óÅÂ È®ÀÎ
+        // ì•„ì´í…œ ìƒíƒœ í™•ì¸
         Item itemScript = obj.GetComponent<Item>();
         if (itemScript == null || !itemScript.inSlot) return;
 
-        // ½½·Ô Á¤º¸ ÃÊ±âÈ­
+        // ìŠ¬ë¡¯ ì •ë³´ ì´ˆê¸°í™”
         ItemInSlot = null;
 
-        // ºÎ¸ğ °ü°è Á¦°Å
+        // ë¶€ëª¨ ê´€ê³„ ì œê±°
         obj.transform.parent = null;
 
-        // ¹°¸® ¿£Áø È°¼ºÈ­
+        // ë¬¼ë¦¬ ì—”ì§„ í™œì„±í™”
         Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
         if (objRigidbody != null)
         {
             objRigidbody.isKinematic = false;
         }
 
-        // ¾ÆÀÌÅÛ »óÅÂ ÃÊ±âÈ­
+        // ì•„ì´í…œ ìƒíƒœ ì´ˆê¸°í™”
         itemScript.inSlot = false;
         itemScript.CurrentSlot = null;
 
-        // ½½·Ô »ö»ó ÃÊ±âÈ­
+        // ìŠ¬ë¡¯ ìƒ‰ìƒ ì´ˆê¸°í™”
         ResetColor();
     }
 
-    // ½½·Ô »ö»ó ÃÊ±âÈ­
+    // ìŠ¬ë¡¯ ìƒ‰ìƒ ì´ˆê¸°í™”
     public void ResetColor()
     {
         slotImage.color = originalColor;
