@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -14,6 +13,8 @@ public class BonePuzzleManager : MonoBehaviour
     public Bone[] bones;
     private bool allBonesCorrect = false; // 모든 뼈가 맞춰졌는지 확인
     private bool messageDisplayed = false; // 메세지 출력 여부 관리
+    
+    public string targetObjectName = "Tyrannosaurus_SKEL5-full";
 
     private void Update()
     {
@@ -41,15 +42,42 @@ public class BonePuzzleManager : MonoBehaviour
         if (allBonesCorrect && !messageDisplayed)
         {
             Debug.Log("All Bones Correct");
+            HideTargetObjectAndBones(); // 뼈를 숨기는 메서드 호출
             messageDisplayed = true; // 메시지 출력 후 상태를 업데이트
         }
-
     }
 
     private bool IsBoneAtCorrectPosition(Bone bone)
     {
         // 자동 스냅된 경우 정확한 위치에 있는 것으로 간주
         return bone.boneObject.transform.position == bone.correctPosition.position &&
-            bone.boneObject.transform.rotation == bone.correctPosition.rotation;
+               bone.boneObject.transform.rotation == bone.correctPosition.rotation;
+    }
+
+    private void HideTargetObjectAndBones()
+    {
+        // 지정된 이름의 오브젝트르 찾음
+        GameObject targetObject = GameObject.Find(targetObjectName);
+        
+        // 대상 오브젝트 비활성화
+        if (targetObject != null)
+        {
+            targetObject.SetActive(false);
+            Debug.Log($"Target object '{targetObjectName}' has been hidden.");
+        }
+        else
+        {
+            Debug.LogWarning($"Target object '{targetObjectName}' was not found.");
+        }
+        
+        // 배열에 있는 모든 뼈를 비활성화
+        foreach (var bone in bones)
+        {
+            if (bone.boneObject != null)
+            {
+                bone.boneObject.gameObject.SetActive(false);
+                Debug.Log($"Bone Object '{bone.boneObject.name}' has been hidden.");
+            }
+        }
     }
 }
