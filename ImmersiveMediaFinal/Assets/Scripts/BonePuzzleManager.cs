@@ -11,10 +11,11 @@ public class BonePuzzleManager : MonoBehaviour
     }
 
     public Bone[] bones;
-    private bool allBonesCorrect = false; // 모든 뼈가 맞춰졌는지 확인
-    private bool messageDisplayed = false; // 메세지 출력 여부 관리
+    private bool _allBonesCorrect = false; // 모든 뼈가 맞춰졌는지 확인
+    private bool _messageDisplayed = false; // 메세지 출력 여부 관리
     
     public string targetObjectName = "Tyrannosaurus_SKEL5-full";
+    public GameObject animatedTyrannosaurus; // T-Rex(animated) 오브젝트
 
     private void Update()
     {
@@ -24,26 +25,27 @@ public class BonePuzzleManager : MonoBehaviour
 
     private void CheckBonePosition()
     {
-        if (messageDisplayed) return;
+        if (_messageDisplayed) return;
 
-        allBonesCorrect = true;
+        _allBonesCorrect = true;
         
         foreach (var bone in bones)
         {
             // 뼈가 정확히 정답 위치에 있는지 확인
             if (!IsBoneAtCorrectPosition(bone))
             {
-                allBonesCorrect = false;
+                _allBonesCorrect = false;
                 break;
             }
         }
 
         // 모든 뼈가 올바른 위치에 있는 경우
-        if (allBonesCorrect && !messageDisplayed)
+        if (_allBonesCorrect && !_messageDisplayed)
         {
             Debug.Log("All Bones Correct");
             HideTargetObjectAndBones(); // 뼈를 숨기는 메서드 호출
-            messageDisplayed = true; // 메시지 출력 후 상태를 업데이트
+            ShowAnimatedTyrannosaurus();
+            _messageDisplayed = true; // 메시지 출력 후 상태를 업데이트
         }
     }
 
@@ -78,6 +80,20 @@ public class BonePuzzleManager : MonoBehaviour
                 bone.boneObject.gameObject.SetActive(false);
                 Debug.Log($"Bone Object '{bone.boneObject.name}' has been hidden.");
             }
+        }
+    }
+
+    private void ShowAnimatedTyrannosaurus()
+    {
+        // 애니메이션 오브젝트를 활성화
+        if (animatedTyrannosaurus != null)
+        {
+            animatedTyrannosaurus.SetActive(true);
+            Debug.Log($"Animated T-Rex has been shown.");
+        }
+        else
+        {
+            Debug.LogWarning($"Animated T-Rex object is not assigned in the inspector.");
         }
     }
 }
