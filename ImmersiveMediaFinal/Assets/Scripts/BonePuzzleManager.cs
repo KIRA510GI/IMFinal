@@ -8,6 +8,7 @@ public class BonePuzzleManager : MonoBehaviour
     {
         public XRGrabInteractable boneObject; // XR 조작 가능한 뼈
         public Transform correctPosition; // 올바른 위치 (Transform)
+        public Material correctMaterial; // 올바른 Material (Bone)
     }
 
     public Bone[] bones;
@@ -31,7 +32,7 @@ public class BonePuzzleManager : MonoBehaviour
         
         foreach (var bone in bones)
         {
-            // 뼈가 정확히 정답 위치에 있는지 확인
+            // 뼈가 정확히 정답 위치에 있는지 확인하고, Material이 올바른지 확인
             if (!IsBoneAtCorrectPosition(bone))
             {
                 _allBonesCorrect = false;
@@ -39,7 +40,7 @@ public class BonePuzzleManager : MonoBehaviour
             }
         }
 
-        // 모든 뼈가 올바른 위치에 있는 경우
+        // 모든 뼈가 올바른 위치에 있고, 올바른 Material을 가진 경우
         if (_allBonesCorrect && !_messageDisplayed)
         {
             Debug.Log("All Bones Correct");
@@ -51,9 +52,13 @@ public class BonePuzzleManager : MonoBehaviour
 
     private bool IsBoneAtCorrectPosition(Bone bone)
     {
-        // 자동 스냅된 경우 정확한 위치에 있는 것으로 간주
-        return bone.boneObject.transform.position == bone.correctPosition.position &&
-               bone.boneObject.transform.rotation == bone.correctPosition.rotation;
+        // 뼈의 위치와 회전이 정확하고, Material이 올바른지 확인
+        bool isAtCorrectPosition = bone.boneObject.transform.position == bone.correctPosition.position &&
+                                    bone.boneObject.transform.rotation == bone.correctPosition.rotation;
+
+        bool hasCorrectMaterial = bone.boneObject.GetComponent<Renderer>().sharedMaterial == bone.correctMaterial;
+
+        return isAtCorrectPosition && hasCorrectMaterial;
     }
 
     private void HideTargetObjectAndBones()
