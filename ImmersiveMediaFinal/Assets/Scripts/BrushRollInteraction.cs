@@ -4,10 +4,14 @@ public class BrushRollInteraction : MonoBehaviour
 {
     public Material boneMaterial;           // 교체할 새로운 Material (Bone)
     public Material spineColorMaterial;     // 기존 Material (Spine_color)
-    public GameObject cleanObject;         // Clean 오브젝트 (브러쉬 질 시 활성화/비활성화 할 오브젝트)
+    public GameObject cleanObject;          // Clean 오브젝트 (브러쉬 질 시 활성화/비활성화 할 오브젝트)
+    public GameObject[] allowedObjects;     // 충돌 반응을 허용할 오브젝트 배열
+    public float movementThreshold = 0.1f; // 움직임 감지 기준 거리
 
     private int shakeCount = 0;             // 털어내기 횟수 추적
     private bool isColliding = false;       // 충돌 상태 추적
+    private Vector3 lastPosition;           // 이전 프레임의 브러쉬 위치
+    private float accumulatedMovement = 0; // 축적된 움직임 거리
 
     private void Start()
     {
@@ -16,61 +20,106 @@ public class BrushRollInteraction : MonoBehaviour
         {
             cleanObject.SetActive(false);
         }
+
+        Debug.Log("BrushRollInteraction 초기화 완료");
+    }
+
+    private bool IsAllowedObject(GameObject obj)
+    {
+        // 허용된 오브젝트 배열에 포함되어 있는지 확인
+        foreach (GameObject allowedObject in allowedObjects)
+        {
+            if (allowedObject == obj)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // 충돌이 시작되면 충돌 상태를 기록하고 Clean 오브젝트 활성화
+        if (!IsAllowedObject(collision.gameObject))
+        {
+            Debug.Log($"충돌 무시: {collision.gameObject.name}");
+            return; // 허용되지 않은 오브젝트는 무시
+        }
+
         if (collision.gameObject.GetComponent<MeshRenderer>() != null)
         {
             isColliding = true;
+            lastPosition = transform.position;
 
             // Clean 오브젝트 활성화
             if (cleanObject != null)
             {
                 cleanObject.SetActive(true);
             }
+
+            Debug.Log($"충돌 시작: {collision.gameObject.name}");
         }
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        // 충돌 상태일 때 계속해서 처리
+        if (!IsAllowedObject(collision.gameObject))
+        {
+            return; // 허용되지 않은 오브젝트는 무시
+        }
+
         if (isColliding && collision.gameObject.GetComponent<MeshRenderer>() != null)
         {
-            // 추가적인 조건을 넣을 수 있지만, 현재는 털어내는 행동으로 횟수만 추적
+            float movement = Vector3.Distance(transform.position, lastPosition);
+            Debug.Log($"현재 움직임 거리: {movement}, 축적된 움직임: {accumulatedMovement}");
+
+            if (movement > movementThreshold)
+            {
+                accumulatedMovement += movement;
+
+                if (accumulatedMovement >= movementThreshold * 3)
+                {
+                    shakeCount++;
+                    accumulatedMovement = 0;
+
+                    Debug.Log($"털어내기 카운트 증가: {shakeCount}");
+
+                    if (shakeCount >= 5)
+                    {
+                        MeshRenderer targetMeshRenderer = collision.gameObject.GetComponent<MeshRenderer>();
+                        if (targetMeshRenderer != null && targetMeshRenderer.sharedMaterial == spineColorMaterial)
+                        {
+                            targetMeshRenderer.sharedMaterial = boneMaterial;
+                            Debug.Log("Material이 Bone으로 변경되었습니다");
+                        }
+
+                        shakeCount = 0;
+                    }
+                }
+            }
+
+            lastPosition = transform.position; // 현재 위치를 갱신
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        // 충돌이 종료되었을 때 털어내기 횟수 증가
+        if (!IsAllowedObject(collision.gameObject))
+        {
+            return; // 허용되지 않은 오브젝트는 무시
+        }
+
         if (collision.gameObject.GetComponent<MeshRenderer>() != null)
         {
-            shakeCount++; // 털어내는 행위 횟수 증가
+            isColliding = false;
+            accumulatedMovement = 0;
 
-            // 털어내는 횟수가 15회 이상이면 Material 변경
-            if (shakeCount >= 15)
-            {
-                MeshRenderer targetMeshRenderer = collision.gameObject.GetComponent<MeshRenderer>();
-                if (targetMeshRenderer != null && targetMeshRenderer.sharedMaterial == spineColorMaterial)
-                {
-                    // Material을 Bone으로 교체 (새로운 인스턴스가 아닌 sharedMaterial을 수정)
-                    targetMeshRenderer.sharedMaterial = boneMaterial;
-                }
-
-                // 털어내기 횟수 초기화
-                shakeCount = 0;
-            }
-
-            // 'Clean' 오브젝트 활성화 및 비활성화
+            // Clean 오브젝트 비활성화
             if (cleanObject != null)
             {
-                cleanObject.SetActive(false); // 활성화 상태를 반전시킴
+                cleanObject.SetActive(false);
             }
 
-            // 충돌 상태 초기화
-            isColliding = false;
+            Debug.Log($"충돌 종료: {collision.gameObject.name}");
         }
     }
 }
